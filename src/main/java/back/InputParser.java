@@ -1,18 +1,8 @@
 package back;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
 public class InputParser {
     private String input;
     private InputManipulator inputManipulator;
-
-    public InputParser() {
-    }
-    public InputParser(String input) {
-        this.input = input;
-        inputManipulator = new InputManipulator(input);
-    }
 
     public void setInput(String input) {
         this.input = input;
