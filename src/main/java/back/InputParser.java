@@ -4,16 +4,13 @@ public class InputParser {
     private String input;
     private InputManipulator inputManipulator;
 
-    public void setInput(String input) {
-        this.input = input;
-    }
-
-    public void setInputManipulator(){
+    public InputParser() {
         this.inputManipulator = new InputManipulator();
     }
 
-    public InputManipulator getInputManipulator() {
-        return this.inputManipulator;
+    public void setInput(String input) {
+        this.input = input.trim();
+        this.inputManipulator.setInput(this.input);
     }
 
     public String parseInput() {
@@ -27,14 +24,14 @@ public class InputParser {
             return "Unknown command";
         } else if (input.matches("\\d+")) {
             return input;
-        } else if (input.matches("\\(?-?(\\d|[a-zA-Z])+(\\s*[-+*/]\\s*\\(?-?(\\d|[a-zA-Z])+\\)?)*")) {
+        } else if (input.matches("\\(?-?((\\d\\.)?\\d|[a-zA-Z])+(\\s*[-+*/]\\s*\\(?-?((\\d\\.)?\\d|[a-zA-Z])+\\)?)*\\)?")) {
             return this.inputManipulator.sumOfInput();
-        } else if (input.matches("\\w+.*")) {
+        } else if (input.matches("[a-zA-Z]+.*")) {
             return this.parseInputWithVariables();
         } else if (input.matches(".*")) {
             return "Invalid expression";
         } else {
-            return "sorry";
+            return "sorry";//for debug
         }
     }
 
@@ -42,7 +39,7 @@ public class InputParser {
         if (!input.matches("[a-zA-Z]+.*")) {
             return "Invalid identifier";
         } else {
-            if (input.matches("[a-zA-Z]+(\\s*=\\s*-?(\\d|[a-zA-Z])+)*")) {
+            if (input.matches("[a-zA-Z]+(\\s*=\\s*-?((\\d\\.)?\\d|[a-zA-Z])+)*")) {
                 return this.inputManipulator.manipulateInputWithVariables();
             } else {
                 return "invalid assignment";
