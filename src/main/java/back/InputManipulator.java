@@ -14,23 +14,25 @@ public class InputManipulator {
 
     public void setInput(String input) {
         this.parsedInput = new ArrayList<>();
-        String[] parsedInput = input.split("\\b|\\s");
-        for (String element : parsedInput) {
+        String[] doublesAndEverythingElse = input.splitWithDelimiters("-?\\d+(\\.\\d+)?", 0);
+        for (String element : doublesAndEverythingElse) {
             element = element.trim();
-            if (!element.matches("-?(\\d|[a-zA-Z])+")) {
+            if (!element.matches("-?\\d+(\\.\\d+)?")) {
                 String[] helper = element.split("");
-                //System.out.println("helper");//for debug
                 for (String str : helper) {
-                    // System.out.print(str);//for debug
                     str = str.trim();
-                    this.parsedInput.add(str);
+                    if (!str.isBlank()) {
+                        this.parsedInput.add(str);
+                    }
                 }
             } else {
+                if (element.matches("-\\d+(\\.\\d+)?") && !this.parsedInput.isEmpty()) {
+                    this.parsedInput.add("+");
+                }
                 this.parsedInput.add(element);
             }
         }
         this.parsedInput = this.parsedInput.stream().filter(a -> !a.isBlank()).collect(Collectors.toCollection(ArrayList::new));
-        //this.parsedInput.forEach(a -> System.out.print(a + ","));//for debug
     }
 
     public String sumOfInput() {
@@ -40,16 +42,14 @@ public class InputManipulator {
         if (queue.contains("(") || queue.contains(")")) {
             return "Invalid expression";
         }
-        //queue.forEach(a-> System.out.print(a));//for debug
-        System.out.println();
         for (String element : queue) {
-            if (element.matches("-?\\d+")) {
+            if (element.matches("-?\\d+(\\.\\d+)?")) {
                 stack.push(Double.valueOf(element));
             } else if (element.matches("-?[a-zA-Z]+")) {
                 if (this.variables.containsKey(element)) {
                     stack.push(this.variables.get(element));
                 } else {
-                    return "Unknown variable" + "||" + parsedInput;
+                    return "Unknown variable || " + parsedInput;
                 }
             } else if (element.matches("[-+*/]")) {
                 double firstOperand;
@@ -67,8 +67,6 @@ public class InputManipulator {
                     default -> 0;
                 };
                 stack.push(result);
-            } else if (element.matches("\\.")) {
-
             } else {
                 return "oops";
             }
@@ -78,16 +76,11 @@ public class InputManipulator {
 
     public String manipulateInputWithVariables() {
         String variable = parsedInput.get(0);
-        //System.out.println(variable);//for debug
         if (parsedInput.size() == 1 && this.variables.containsKey(variable)) {
-            //if (this.variables.containsKey(variable)) {
             return String.valueOf(this.variables.get(variable));
-           /* } else {
-                return "Unknown variable - mIWV";//for debug
-            }*/
         }
         String value = parsedInput.get(2);
-        if (value.matches("-?\\d+")) {
+        if (value.matches("-?\\d+(\\.\\d+)?")) {
             double valueInt = Double.parseDouble(value);
             if (this.variables.containsKey(variable)) {
                 this.variables.replace(variable, valueInt);

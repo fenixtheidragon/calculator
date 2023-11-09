@@ -22,16 +22,14 @@ public class InputParser {
             return "Bye!";
         } else if (input.matches("/.*")) {
             return "Unknown command";
-        } else if (input.matches("\\d+")) {
+        } else if (input.matches("-?\\d+(\\.\\d+)?")) {
             return input;
-        } else if (input.matches("\\(?-?((\\d\\.)?\\d|[a-zA-Z])+(\\s*[-+*/]\\s*\\(?-?((\\d\\.)?\\d|[a-zA-Z])+\\)?)*\\)?")) {
+        } else if (input.matches("\\(?(-?((\\d+(\\.\\d+)?)|[a-zA-Z]+))(\\s*[-+*/]\\s*\\(?(-?(\\d+(\\.\\d+)?)|[a-zA-Z]+)\\)?)+\\)?")) {
             return this.inputManipulator.sumOfInput();
         } else if (input.matches("[a-zA-Z]+.*")) {
             return this.parseInputWithVariables();
-        } else if (input.matches(".*")) {
-            return "Invalid expression";
         } else {
-            return "sorry";//for debug
+            return "Invalid expression";
         }
     }
 
