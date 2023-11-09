@@ -2,37 +2,39 @@ package back;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.stream.Collectors;
 
 public class InputManipulator {
+    private final Map<String, Double> variables;
     private ArrayList<String> parsedInput;
-    private Map<String, Double> variables;
 
     public InputManipulator() {
-        this.variables = new HashMap<>();
+        variables = new HashMap<>();
+    }
+
+    public String getVariablesAsString() {
+        return variables.toString();
     }
 
     public void setInput(String input) {
-        this.parsedInput = new ArrayList<>();
-        String[] doublesAndEverythingElse = input.splitWithDelimiters("-?\\d+(\\.\\d+)?", 0);
-        for (String element : doublesAndEverythingElse) {
+        parsedInput = new ArrayList<>();
+        String[] numbersAndSigns = input.splitWithDelimiters("-?\\d+(\\.\\d+)?", 0);
+        for (String element : numbersAndSigns) {
             element = element.trim();
-            if (!element.matches("-?\\d+(\\.\\d+)?")) {
+            if (element.matches("-?\\d+(\\.\\d+)?")) {
+                if (element.matches("-\\d+(\\.\\d+)?") && !parsedInput.isEmpty() && !parsedInput.get(0).matches("[a-zA-Z]+")) {
+                    parsedInput.add("+");
+                }
+                parsedInput.add(element);
+            } else {
                 String[] helper = element.split("");
                 for (String str : helper) {
                     str = str.trim();
                     if (!str.isBlank()) {
-                        this.parsedInput.add(str);
+                        parsedInput.add(str);
                     }
                 }
-            } else {
-                if (element.matches("-\\d+(\\.\\d+)?") && !this.parsedInput.isEmpty()) {
-                    this.parsedInput.add("+");
-                }
-                this.parsedInput.add(element);
             }
         }
-        this.parsedInput = this.parsedInput.stream().filter(a -> !a.isBlank()).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public String sumOfInput() {
@@ -80,13 +82,14 @@ public class InputManipulator {
             return String.valueOf(this.variables.get(variable));
         }
         String value = parsedInput.get(2);
+        System.out.println(value);
         if (value.matches("-?\\d+(\\.\\d+)?")) {
-            double valueInt = Double.parseDouble(value);
+            double valueDouble = Double.parseDouble(value);
             if (this.variables.containsKey(variable)) {
-                this.variables.replace(variable, valueInt);
+                this.variables.replace(variable, valueDouble);
                 return "Variable's value changed";
             }
-            this.variables.put(variable, valueInt);
+            this.variables.put(variable, valueDouble);
             return "Variable created";
         } else {
             if (this.variables.containsKey(value)) {
