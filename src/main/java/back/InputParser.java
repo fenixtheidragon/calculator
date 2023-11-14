@@ -32,13 +32,13 @@ public class InputParser {
         } else if (input.matches(RegexesAndCommands.EXPRESSION.getResult())) {
             return this.inputManipulator.sumOfInput();
         } else if (input.matches(RegexesAndCommands.VARIABLE_EQUALS.getResult())) {
-            return this.parseInputWithVariables();
+            return this.parseVariableEqualsSomething();
         } else {
             return "Invalid expression. Enter /help to receive help.";
         }
     }
 
-    private String parseInputWithVariables() {
+    private String parseVariableEqualsSomething() {
         if (input.matches(RegexesAndCommands.INVALID_IDENTIFIER.getResult())) {
             return "Invalid identifier";
         } else {

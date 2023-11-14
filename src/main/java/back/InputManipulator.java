@@ -89,11 +89,7 @@ public class InputManipulator {
         String variable = parsedInput.get(0);
         String value;
         if (parsedInput.size() == 1) {
-            if (variables.containsKey(variable)) {
-                return String.valueOf(variables.get(variable));
-            } else {
-                return "Unknown variable";
-            }
+            return this.getVariablesValueOrUnknownVariableException(variable);
         } else if (parsedInput.size() == 3) {
             value = parsedInput.get(2);
         } else {
@@ -107,15 +103,15 @@ public class InputManipulator {
         if (value.matches("-?" + RegexesAndCommands.NUMBER.getResult())) {
             valueDouble = Double.parseDouble(value);
         } else if (value.matches("-?" + RegexesAndCommands.VARIABLE.getResult())) {
-            return this.getVariablesValueOrUnknownVariableException(value);
+            valueDouble = Double.parseDouble( this.getVariablesValueOrUnknownVariableException(value));
         } else if (value.matches(RegexesAndCommands.EXPRESSION.getResult())) {
             InputManipulator inputManipulator = new InputManipulator();
             inputManipulator.setInput(value);
-            String valueDoubleStr = inputManipulator.sumOfInput();
-            if (valueDoubleStr.matches(RegexesAndCommands.NUMBER.getResult())) {
-                valueDouble = Double.parseDouble(valueDoubleStr);
+            value = inputManipulator.sumOfInput();
+            if (value.matches(RegexesAndCommands.NUMBER.getResult())) {
+                valueDouble = Double.parseDouble(value);
             } else {
-                return valueDoubleStr;
+                return value;
             }
         } else {
             return "Invalid expression";
