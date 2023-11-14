@@ -26,13 +26,15 @@ public class ChangerFromInfixToPostfix {
     private void railroadAlgorithm(String incomingElement) {
         if (incomingElement.matches("[-+*/()]")) {
             String top = operatorStack.peek();
-            if (top == null || top.matches("\\(") || incomingElement.matches("\\(") || (top.matches("[+-]") && incomingElement.matches("[*/]"))) {
+            if (top == null || top.matches("\\(") || incomingElement.matches("\\(") ||
+                (top.matches("[+-]") && incomingElement.matches("[*/]"))) {
                 if (top != null && (top.matches("\\(") && incomingElement.matches("\\)"))) {
                     operatorStack.pop();
                     return;
                 }
                 operatorStack.push(incomingElement);
-            } else if ((top.matches("[-+]") && incomingElement.matches("[-+]")) || (top.matches("[*/]") && (incomingElement.matches("[-+*/]"))) || incomingElement.matches("\\)")) {
+            } else if ((top.matches("[-+]") && incomingElement.matches("[-+]")) ||
+                       (top.matches("[*/]") && (incomingElement.matches("[-+*/]"))) || incomingElement.matches("\\)")) {
                 outputQueue.add(operatorStack.pop());
                 railroadAlgorithm(incomingElement);
             }

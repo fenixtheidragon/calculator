@@ -1,14 +1,6 @@
 package back;
 
 public class InputParser {
-    private final String HELP_MESSAGE = """
-                                        Calculator.
-                                        Enter expression to calculate result.
-                                        Decimals are allowed. Variables are allowed but must be composed with latin letters only.
-                                        Commands:
-                                        /help - to show this message;
-                                        /variables - to show list of variables;
-                                        /exit - to quit calculator;""";
     private final InputManipulator inputManipulator;
     private String input;
 
@@ -22,21 +14,24 @@ public class InputParser {
     }
 
     public String parseInput() {
+
         if (input.matches("\\s*")) {
             return "";
         } else if (input.matches("/help")) {
-            return HELP_MESSAGE;
+            return RegexesAndCommands.HELP.getResult();
         } else if (input.matches("/variables")) {
             return inputManipulator.getVariablesAsString();
         } else if (input.matches("/exit")) {
             return "Bye!";
-        } else if (input.matches("/.*")) {
-            return "Unknown command. Enter /help to receive help.";
-        } else if (input.matches("-?\\d+(\\.\\d+)?")) {
+        } else if (input.matches(RegexesAndCommands.UNKNOWN_COMMAND.getResult())) {
+            return "Unknown command";
+        } else if (input.matches("-?" + RegexesAndCommands.NUMBER.getResult())) {
             return input;
-        } else if (input.matches("\\(?(-?((\\d+(\\.\\d+)?)|[a-zA-Z]+))(\\s*[-+*/]\\s*\\(?(-?(\\d+(\\.\\d+)?)|[a-zA-Z]+)\\)?)+\\)?")) {
+        } else if (input.matches(RegexesAndCommands.VARIABLE.getResult())) {
+            return this.inputManipulator.getVariablesValueOrUnknownVariableException(input);
+        } else if (input.matches(RegexesAndCommands.EXPRESSION.getResult())) {
             return this.inputManipulator.sumOfInput();
-        } else if (input.matches("[a-zA-Z]+.*")) {
+        } else if (input.matches(RegexesAndCommands.VARIABLE_EQUALS.getResult())) {
             return this.parseInputWithVariables();
         } else {
             return "Invalid expression. Enter /help to receive help.";
@@ -44,10 +39,11 @@ public class InputParser {
     }
 
     private String parseInputWithVariables() {
-        if (!input.matches("[a-zA-Z]+.*")) {
+        if (input.matches(RegexesAndCommands.INVALID_IDENTIFIER.getResult())) {
             return "Invalid identifier";
         } else {
-            if (input.matches("[a-zA-Z]+(\\s*=\\s*-?((\\d\\.)?\\d|[a-zA-Z])+)*")) {
+            if (input.matches(RegexesAndCommands.VARIABLE_EQUALS_NUMBER_OR_ANOTHER_VARIABLE.getResult()) ||
+                input.matches(RegexesAndCommands.VARIABLE_EQUALS_EXPRESSION.getResult())) {
                 return this.inputManipulator.manipulateInputWithVariables();
             } else {
                 return "invalid assignment";

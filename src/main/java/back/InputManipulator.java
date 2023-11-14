@@ -15,13 +15,22 @@ public class InputManipulator {
         return variables.toString();
     }
 
+    public String getVariablesValueOrUnknownVariableException(String name) {
+        if (variables.containsKey(name)) {
+            return String.valueOf(variables.get(name));
+        } else {
+            return "Unknown variable";
+        }
+    }
+
     public void setInput(String input) {
         parsedInput = new ArrayList<>();
-        String[] numbersAndSigns = input.splitWithDelimiters("-?\\d+(\\.\\d+)?", 0);
+        String[] numbersAndSigns = input.splitWithDelimiters(RegexesAndCommands.POTENTIAL_MINUS_AND_NUMBER_OR_VARIABLE.getResult(), -1);
         for (String element : numbersAndSigns) {
             element = element.trim();
-            if (element.matches("-?\\d+(\\.\\d+)?")) {
-                if (element.matches("-\\d+(\\.\\d+)?") && !parsedInput.isEmpty() && !parsedInput.get(0).matches("[a-zA-Z]+")) {
+            if (element.matches(RegexesAndCommands.POTENTIAL_MINUS_AND_NUMBER_OR_VARIABLE.getResult())) {
+                if (element.matches("-" + RegexesAndCommands.NUMBER_OR_VARIABLE.getResult()) && !parsedInput.isEmpty() &&
+                    !parsedInput.get(0).matches("[a-zA-Z]+") && !parsedInput.getLast().matches("[-+*/(]")) {
                     parsedInput.add("+");
                 }
                 parsedInput.add(element);
@@ -45,11 +54,11 @@ public class InputManipulator {
             return "Invalid expression";
         }
         for (String element : queue) {
-            if (element.matches("-?\\d+(\\.\\d+)?")) {
-                stack.push(Double.valueOf(element));
-            } else if (element.matches("-?[a-zA-Z]+")) {
-                if (this.variables.containsKey(element)) {
-                    stack.push(this.variables.get(element));
+            if (element.matches("-?" + RegexesAndCommands.NUMBER.getResult())) {
+                stack.push(Double.parseDouble(element));
+            } else if (element.matches("-?" + RegexesAndCommands.VARIABLE.getResult())) {
+                if (variables.containsKey(element)) {
+                    stack.push(variables.get(element));
                 } else {
                     return "Unknown variable || " + parsedInput;
                 }
@@ -78,25 +87,53 @@ public class InputManipulator {
 
     public String manipulateInputWithVariables() {
         String variable = parsedInput.get(0);
-        if (parsedInput.size() == 1 && this.variables.containsKey(variable)) {
-            return String.valueOf(this.variables.get(variable));
-        }
-        String value = parsedInput.get(2);
-        System.out.println(value);
-        if (value.matches("-?\\d+(\\.\\d+)?")) {
-            double valueDouble = Double.parseDouble(value);
-            if (this.variables.containsKey(variable)) {
-                this.variables.replace(variable, valueDouble);
-                return "Variable's value changed";
+        String value;
+        if (parsedInput.size() == 1) {
+            if (variables.containsKey(variable)) {
+                return String.valueOf(variables.get(variable));
+            } else {
+                return "Unknown variable";
             }
-            this.variables.put(variable, valueDouble);
-            return "Variable created";
+        } else if (parsedInput.size() == 3) {
+            value = parsedInput.get(2);
         } else {
-            if (this.variables.containsKey(value)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 2; i < parsedInput.size(); i++) {
+                stringBuilder.append(parsedInput.get(i));
+            }
+            value = stringBuilder.toString();
+        }
+        double valueDouble;
+        if (value.matches("-?" + RegexesAndCommands.NUMBER.getResult())) {
+            valueDouble = Double.parseDouble(value);
+        } else if (value.matches("-?" + RegexesAndCommands.VARIABLE.getResult())) {
+            return this.getVariablesValueOrUnknownVariableException(value);
+        } else if (value.matches(RegexesAndCommands.EXPRESSION.getResult())) {
+            InputManipulator inputManipulator = new InputManipulator();
+            inputManipulator.setInput(value);
+            String valueDoubleStr = inputManipulator.sumOfInput();
+            if (valueDoubleStr.matches(RegexesAndCommands.NUMBER.getResult())) {
+                valueDouble = Double.parseDouble(valueDoubleStr);
+            } else {
+                return valueDoubleStr;
+            }
+        } else {
+            return "Invalid expression";
+        }
+        if (this.variables.containsKey(variable)) {
+            if (variables.containsKey(value)) {
                 this.variables.replace(variable, this.variables.get(value));
                 return "Variable's value changed with another variable's value";
             } else {
+                this.variables.replace(variable, valueDouble);
+                return "Variable's value changed";
+            }
+        } else {
+            if (value.matches("[a-zA-Z]+")) {
                 return "Unknown variable";
+            } else {
+                this.variables.put(variable, valueDouble);
+                return "Variable created";
             }
         }
     }
