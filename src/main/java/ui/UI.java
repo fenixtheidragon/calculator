@@ -1,18 +1,18 @@
 package ui;
 
-import back.InputParser;
+import back.InputToOutputMatcher;
 
 import java.util.Scanner;
 
 public class UI {
     public void start() {
         Scanner scanner = new Scanner(System.in);
-        InputParser inputParser = new InputParser();
+        InputToOutputMatcher inputToOutputMatcher = new InputToOutputMatcher();
         while (true) {
             System.out.print("> ");
             String input = scanner.nextLine();
-            inputParser.setInput(input);
-            String parsed = inputParser.parseInput();
+            inputToOutputMatcher.setInput(input);
+            String parsed = inputToOutputMatcher.matchInput();
             System.out.println(parsed);
             if (parsed.equals("Bye!")) {
                 break;

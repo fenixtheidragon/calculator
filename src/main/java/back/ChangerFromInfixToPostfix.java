@@ -15,7 +15,7 @@ public class ChangerFromInfixToPostfix {
         this.operatorStack = new ArrayDeque<>();
     }
 
-    public ArrayBlockingQueue<String> fromInfixToPostfix() {
+    public ArrayBlockingQueue<String> changeFromInfixToPostfix() {
         for (String incomingElement : parsedInput) {
             railroadAlgorithm(incomingElement);
         }
