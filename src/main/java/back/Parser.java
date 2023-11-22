@@ -17,16 +17,16 @@ public class Parser {
 
     public ArrayList<String> parseExpression(String expression) {
         ArrayList<String> parsedInput = new ArrayList<>();
-        String[] numbersVariablesAndSigns = expression.splitWithDelimiters("-?((\\d+(\\.\\d+)?)|([a-zA-Z]+))", -1);
+        String[] numbersVariablesAndSigns = expression.splitWithDelimiters("-?" + Regexes.NUMBER_OR_VARIABLE.getRegex(), -1);
         for (String element : numbersVariablesAndSigns) {
             element = element.trim();
             if (element.isBlank()) {
                 continue;
             }
-            if (element.matches("(\\d+(\\.\\d+)?)|([a-zA-Z]+)")) {
+            if (element.matches(Regexes.NUMBER_OR_VARIABLE.getRegex())) {
                 parsedInput.add(element);
-            } else if (element.matches("-((\\d+(\\.\\d+)?)|([a-zA-Z]+))")) {
-                if (parsedInput.size() > 1 && !parsedInput.getLast().matches("(\\d+(\\.\\d+)?)|([a-zA-Z]+)|(\\))")) {
+            } else if (element.matches("-"+Regexes.NUMBER_OR_VARIABLE.getRegex())) {
+                if (parsedInput.size() > 1 && !parsedInput.getLast().matches(Regexes.NUMBER_OR_VARIABLE.getRegex()+"|(\\))")) {
                     parsedInput.add("0");
                 }
                 parsedInput.add(element.substring(0, 1));
@@ -43,9 +43,5 @@ public class Parser {
         }
 
         return parsedInput;
-    }
-
-    public String[] parseEquation(String equation) {
-        return equation.split("\\s*=\\s*");
     }
 }

@@ -4,18 +4,18 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class ChangerFromInfixToPostfix {
+public class InfixToPostfixConverter {
     private final ArrayList<String> parsedInput;
     private final ArrayBlockingQueue<String> outputQueue;
     private final ArrayDeque<String> operatorStack;
 
-    public ChangerFromInfixToPostfix(ArrayList<String> parsedInput) {
+    public InfixToPostfixConverter(ArrayList<String> parsedInput) {
         this.parsedInput = parsedInput;
         this.outputQueue = new ArrayBlockingQueue<>(parsedInput.size());
         this.operatorStack = new ArrayDeque<>();
     }
 
-    public ArrayBlockingQueue<String> changeFromInfixToPostfix() {
+    public ArrayBlockingQueue<String> convert() {
         for (String incomingElement : parsedInput) {
             railroadAlgorithm(incomingElement);
         }
