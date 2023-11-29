@@ -1,10 +1,11 @@
 package back;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Parser {
 
-    public String parseInput(String input) {
+    public String returnInputWithoutSpaces(String input) {
         StringBuilder stringBuilder = new StringBuilder();
         String[] characters = input.split("");
         for (String character: characters) {
@@ -15,23 +16,23 @@ public class Parser {
         return stringBuilder.toString();
     }
 
-    public ArrayList<String> parseExpression(String expression) {
+    public ConcurrentLinkedQueue<String> parseExpression(String expression) {
         ArrayList<String> parsedInput = new ArrayList<>();
-        String[] numbersVariablesAndSigns = expression.splitWithDelimiters("-?" + Regexes.NUMBER_OR_VARIABLE.getRegex(), -1);
+        String[] numbersVariablesAndSigns = expression.splitWithDelimiters(Regexes.NUM_OR_VAR.getRegex(), -1);
         for (String element : numbersVariablesAndSigns) {
             element = element.trim();
             if (element.isBlank()) {
                 continue;
             }
-            if (element.matches(Regexes.NUMBER_OR_VARIABLE.getRegex())) {
+            if (element.matches(Regexes.NUM_OR_VAR.getRegex())) {
                 parsedInput.add(element);
-            } else if (element.matches("-"+Regexes.NUMBER_OR_VARIABLE.getRegex())) {
+            }/* else if (element.matches("-"+Regexes.NUMBER_OR_VARIABLE.getRegex())) {
                 if (parsedInput.size() > 1 && !parsedInput.getLast().matches(Regexes.NUMBER_OR_VARIABLE.getRegex()+"|(\\))")) {
                     parsedInput.add("0");
                 }
                 parsedInput.add(element.substring(0, 1));
                 parsedInput.add(element.substring(1));
-            } else {
+            }*/ else {
                 String[] signs = element.split("");
                 for (String sign : signs) {
                     sign = sign.trim();
@@ -41,7 +42,6 @@ public class Parser {
                 }
             }
         }
-
-        return parsedInput;
+        return new InfixToPostfixConverter(parsedInput).convert();
     }
 }

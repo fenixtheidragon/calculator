@@ -1,8 +1,4 @@
 package back;
-
-import lombok.Getter;
-
-@Getter
 public enum Messages {
     HELP_MSG("""
             Calculator.
@@ -16,9 +12,21 @@ public enum Messages {
             No variables yet.
             You can create one like this: "a=5".
             Instead of "a" you may use any lowercase or uppercase latin letters or combinations of them.
-            Instead of "5" you may use any numbers or allowed expressions""");
-    private final String result;
-    Messages(String result) {
-        this.result = result;
+            Instead of "5" you may use any numbers or allowed expressions"""),
+    NUMBER_IS_TOO_LARGE_MSG("""
+            Sorry, but resulting number is larger than 10^15.
+            This calculator doesn't work with numbers
+            larger than 1 000 000 000 000 000(10^15 or 1 quadrillion)"""),
+    NUMBER_IS_TOO_SMALL_MSG("""
+            Sorry, but resulting number is smaller than -10^15.
+            This calculator doesn't work with numbers
+            smaller than -1 000 000 000 000 000(-10^15 or -1 quadrillion)""");
+    private final String message;
+    Messages(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

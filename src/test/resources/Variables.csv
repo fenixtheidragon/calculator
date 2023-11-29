@@ -1,0 +1,11 @@
+a,1
+b,2
+c,-1
+ab,Unknown variable: ab
+ba,Unknown variable: ba
+ac,Unknown variable: ac
+cb,Unknown variable: cb
+bc,Unknown variable: bc
+aa,Unknown variable: aa
+bb,Unknown variable: bb
+cc,Unknown variable: cc

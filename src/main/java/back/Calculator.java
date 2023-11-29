@@ -3,7 +3,7 @@ package back;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Calculator {
     private final Map<String, Double> variables;
@@ -14,7 +14,7 @@ public class Calculator {
 
     public String getVariablesAsString() {
         if (variables.isEmpty()) {
-            return Messages.VARIABLES_MSG.getResult();
+            return Messages.VARIABLES_MSG.getMessage();
         }
         return variables.toString();
     }
@@ -27,45 +27,49 @@ public class Calculator {
         }
     }
 
-    public String calculateExpression(ArrayList<String> parsedExpression) {
-        InfixToPostfixConverter converter = new InfixToPostfixConverter(parsedExpression);
+    public String calculateExpression(ConcurrentLinkedQueue<String> postfixExpression) {
         Deque<Double> stack = new ArrayDeque<>();
-        ArrayBlockingQueue<String> queue = converter.convert();
-        if (queue.contains("(") || queue.contains(")")) {
+        if (postfixExpression.contains("(") || postfixExpression.contains(")")) {
             return "Invalid expression";
         }
-        for (String element : queue) {
-            if (element.matches("-?" + Regexes.NUMBER.getRegex())) {
+        for (String element : postfixExpression) {
+            if (element.matches(Regexes.NUMBER.getRegex())) {
                 stack.push(Double.parseDouble(element));
-            } else if (element.matches("-?" + Regexes.VARIABLE.getRegex())) {
+            } else if (element.matches(Regexes.VARIABLE.getRegex())) {
                 if (variables.containsKey(element)) {
                     stack.push(variables.get(element));
                 } else {
-                    return "Unknown variable " + element;
+                    return "Unknown variable: " + element;
                 }
             } else if (element.matches("[-+*/]")) {
-                double firstOperand;
                 double secondOperand = stack.pop();
-                if (element.matches("-") && stack.isEmpty()) {
+                double firstOperand;
+                if (element.equals("-") && stack.isEmpty()) {
                     firstOperand = 0;
                 } else {
                     firstOperand = stack.pop();
                 }
-                    double result = switch (element) {
-                        case "+" -> firstOperand + secondOperand;
-                        case "-" -> firstOperand - secondOperand;
-                        case "*" -> firstOperand * secondOperand;
-                        case "/" -> firstOperand / secondOperand;
-                        default -> 0;
-                    };
-                    stack.push(result);
+                double result = switch (element) {
+                    case "+" -> firstOperand + secondOperand;
+                    case "-" -> firstOperand - secondOperand;
+                    case "*" -> firstOperand * secondOperand;
+                    case "/" -> firstOperand / secondOperand;
+                    default -> 0;
+                };
+                stack.push(result);
             } else {
                 return "oops";
             }
         }
+        double returned = stack.pop();
+        if (returned >= 1000000000000000L) {
+            return Messages.NUMBER_IS_TOO_LARGE_MSG.getMessage();
+        } else if (returned <= -1000000000000000L) {
+            return Messages.NUMBER_IS_TOO_SMALL_MSG.getMessage();
+        }
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(10);
-        return df.format(stack.pop());
+        df.setMaximumFractionDigits(6);
+        return df.format(returned);
     }
 
     private String addVariable(String variable, Double value) {

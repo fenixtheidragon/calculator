@@ -1,0 +1,8 @@
+a,999999999999999
+-a,-999999999999999
+a+1,"Sorry, but resulting number is larger than 10^15.
+This calculator doesn't work with numbers
+larger than 1 000 000 000 000 000(10^15 or 1 quadrillion)"
+-a-1,"Sorry, but resulting number is smaller than -10^15.
+This calculator doesn't work with numbers
+smaller than -1 000 000 000 000 000(-10^15 or -1 quadrillion)"
