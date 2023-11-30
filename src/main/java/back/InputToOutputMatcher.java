@@ -10,11 +10,8 @@ public class InputToOutputMatcher {
         this.calculator = new Calculator();
     }
 
-    public void setInput(String input) {
+    public String matchInput(String input) {
         this.input = parser.returnInputWithoutSpaces(input);
-    }
-
-    public String matchInput() {
         if (input.isBlank()) {
             return "";
         } else if (input.equals("/help")||input.equals("/h")) {

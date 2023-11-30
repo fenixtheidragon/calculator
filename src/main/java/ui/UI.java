@@ -12,8 +12,7 @@ public class UI {
             while (true) {
                 System.out.print("> ");
                 String input = scanner.nextLine();
-                inputToOutputMatcher.setInput(input);
-                String parsed = inputToOutputMatcher.matchInput();
+                String parsed = inputToOutputMatcher.matchInput(input);
                 System.out.println(parsed);
                 if (parsed.equals("Bye!")) {
                     break;

@@ -6,7 +6,7 @@ public enum Messages {
             Decimals are allowed. Variables are allowed but must be composed with latin letters only.
             Commands:
             "/help" or "/h" - to show this message;
-            "/variables or "/v" - to show list of variables;
+            "/variables" or "/v" - to show list of variables;
             "/quit" - to quit calculator;"""),
     VARIABLES_MSG("""
             No variables yet.

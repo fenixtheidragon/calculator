@@ -5,12 +5,12 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Random;
 
-public class StringGeneratorForCalculator {
+public class ExpressionGenerator {
     private final Random random;
     private final char[] alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     private final char[] operators = "+-*/".toCharArray();
 
-    public StringGeneratorForCalculator() {
+    public ExpressionGenerator() {
         this.random = new Random();
     }
 
@@ -30,6 +30,11 @@ public class StringGeneratorForCalculator {
             sb.append(alphabet[letterNum]);
         }
         return sb.toString();
+    }
+
+    private String returnAOrBOrC() {
+        int num = random.nextInt(3);
+        return String.valueOf(alphabet[num]);
     }
 
     public String generateValidVariable() {
@@ -61,8 +66,8 @@ public class StringGeneratorForCalculator {
                     amountOfLeftBrackets++;
                     yield "(";
                 }
-                case 1,2 -> generateValidNumber();
-                //case 2 -> generateValidVariable();
+                case 1 -> generateValidNumber();
+                case 2 -> returnAOrBOrC();
                 case 3 -> {
                     if (result.isEmpty()) {
                         yield "-";

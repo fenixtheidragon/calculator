@@ -8,7 +8,7 @@ public enum Regexes {
     //this "EXPRESSION" regex is any valid expression that could be entered into calculator
     //example of expression: -5.1+a/12-((-1+7)*3.2)
     //full form: EXPRESSION("-?(\\(|\\(\\-)*(\\d+(\\.\\d+)?|[a-zA-Z]+)([-+*/](\\(|\\(\\-)*(\\d+(\\.\\d+)?|[a-zA-Z]+)\\)*)*"),
-    EXPRESSION("-?" + LEFT_BRACKETS.regex + NUM_OR_VAR.regex + "(" + "[-+*/]" + LEFT_BRACKETS.regex + NUM_OR_VAR.regex + "\\)*" + ")*"),
+    EXPRESSION("-?" + LEFT_BRACKETS.regex + NUM_OR_VAR.regex + "\\)*" + "(" + "[-+*/]" + LEFT_BRACKETS.regex + NUM_OR_VAR.regex + "\\)*" + ")*"),
     UNKNOWN_CMD("/.*"),
     EQUATION(".*=.*"),
     VAR_EQUALS("[a-zA-Z]+=.*"),
