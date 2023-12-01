@@ -13,6 +13,7 @@ public enum Messages {
             You can create one like this: "a=5".
             Instead of "a" you may use any lowercase or uppercase latin letters or combinations of them.
             Instead of "5" you may use any numbers or allowed expressions"""),
+    INVALID_EXPRESSION_MSG("Invalid expression. Enter /help to receive help."),
     NUMBER_IS_TOO_LARGE_MSG("""
             Sorry, but resulting number is larger than 10^15.
             This calculator doesn't work with numbers

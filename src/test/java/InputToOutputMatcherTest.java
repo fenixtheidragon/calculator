@@ -1,4 +1,5 @@
 import back.InputToOutputMatcher;
+import back.Messages;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InputToOutputMatcherTest {
-    private InputToOutputMatcher iToOMatcher;
     private final ExpressionGenerator expressionGenerator;
+    private InputToOutputMatcher iToOMatcher;
 
-    InputToOutputMatcherTest(){
+    InputToOutputMatcherTest() {
         expressionGenerator = new ExpressionGenerator();
     }
 
@@ -65,10 +66,11 @@ public class InputToOutputMatcherTest {
 
     @RepeatedTest(100)
     void testExpressions() {
-        createVariables(new String[]{"a=3","b=5","c=-7"});
+        createVariables(new String[]{"a=3", "b=5", "c=-7"});
         String result = iToOMatcher.matchInput(generateRandomExpression());
         System.out.println(result);
-        assertTrue(result.matches("-?\\d+(\\.\\d+)?"));
+        assertTrue(result.matches("-?\\d+(\\.\\d+)?") || result.equals(Messages.NUMBER_IS_TOO_LARGE_MSG.getMessage()) ||
+                   result.equals(Messages.NUMBER_IS_TOO_SMALL_MSG.getMessage()));
     }
 
     /*@ParameterizedTest

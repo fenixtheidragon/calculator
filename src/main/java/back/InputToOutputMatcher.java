@@ -27,7 +27,7 @@ public class InputToOutputMatcher {
         } else if (input.matches(Regexes.EQUATION.getRegex())) {
             return this.matchInputWithEquation();
         } else {
-            return "Invalid expression. Enter /help to receive help.";
+            return Messages.INVALID_EXPRESSION_MSG.getMessage();
         }
     }
 
@@ -36,9 +36,9 @@ public class InputToOutputMatcher {
             return "Invalid identifier";
         } else {
             if (input.matches(Regexes.VAR_EQUALS_EXP.getRegex())) {
-                String[] variableAndExpression = input.split("=");
-                String valueOfExpression = calculator.calculateExpression(parser.parseExpression(variableAndExpression[1]));
-                return calculator.calculateEquation(new String[]{variableAndExpression[0], valueOfExpression});
+                String[] variableAndValue = parser.parseEquation(input);
+                variableAndValue[1] = calculator.calculateExpression(parser.parseExpression(variableAndValue[1]));
+                return calculator.calculateEquation(variableAndValue);
             } else {
                 return "invalid assignment";
             }

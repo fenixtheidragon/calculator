@@ -8,7 +8,7 @@ import java.util.Random;
 public class ExpressionGenerator {
     private final Random random;
     private final char[] alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-    private final char[] operators = "+-*/".toCharArray();
+    private final char[] operators = "+-*/^".toCharArray();
 
     public ExpressionGenerator() {
         this.random = new Random();
@@ -72,7 +72,7 @@ public class ExpressionGenerator {
                     if (result.isEmpty()) {
                         yield "-";
                     }
-                    yield String.valueOf(operators[random.nextInt(3)]);
+                    yield String.valueOf(operators[random.nextInt(4)]);
                 }
                 case 4 -> {
                     amountOfRightBrackets++;

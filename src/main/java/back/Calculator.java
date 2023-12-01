@@ -23,25 +23,26 @@ public class Calculator {
         if (variables.containsKey(name)) {
             return String.valueOf(variables.get(name));
         } else {
-            return "Unknown variable";
+            return "Unknown variable: " + name;
         }
     }
 
     public String calculateExpression(ConcurrentLinkedQueue<String> postfixExpression) {
         Deque<Double> stack = new ArrayDeque<>();
         if (postfixExpression.contains("(") || postfixExpression.contains(")")) {
-            return "Invalid expression";
+            return Messages.INVALID_EXPRESSION_MSG.getMessage();
         }
         for (String element : postfixExpression) {
             if (element.matches(Regexes.NUMBER.getRegex())) {
                 stack.push(Double.parseDouble(element));
             } else if (element.matches(Regexes.VARIABLE.getRegex())) {
-                if (variables.containsKey(element)) {
-                    stack.push(variables.get(element));
+                String variable = getValueOfVariableOrUnknownVariableException(element);
+                if (variable.equals("Unknown variable: " + element)) {
+                    return variable;
                 } else {
-                    return "Unknown variable: " + element;
+                    stack.push(Double.parseDouble(variable));
                 }
-            } else if (element.matches("[-+*/]")) {
+            } else if (element.matches(Regexes.OPERATORS.getRegex())) {
                 double secondOperand = stack.pop();
                 double firstOperand;
                 if (element.equals("-") && stack.isEmpty()) {
@@ -49,12 +50,13 @@ public class Calculator {
                 } else {
                     firstOperand = stack.pop();
                 }
-                double result = switch (element) {
+                Double result = switch (element) {
                     case "+" -> firstOperand + secondOperand;
                     case "-" -> firstOperand - secondOperand;
                     case "*" -> firstOperand * secondOperand;
                     case "/" -> firstOperand / secondOperand;
-                    default -> 0;
+                    case "^" -> Math.pow(firstOperand,secondOperand);
+                    default -> null;
                 };
                 stack.push(result);
             } else {
@@ -91,23 +93,24 @@ public class Calculator {
         String variable = variableAndValue[0];
         String value = variableAndValue[1];
         double valueDouble;
-        if (value.matches("-?\\d+(\\.\\d+)?")) {
+        if (value.matches(Regexes.NUMBER.getRegex())) {
             valueDouble = Double.parseDouble(value);
         } else {
-            boolean minus = false;
-            if (value.matches("-[a-zA-Z]+")) {
+            return value;
+            /*boolean minus = false;
+            if (value.startsWith("-")) {
                 value = value.substring(1, value.length() - 1);
                 minus = true;
             }
             value = getValueOfVariableOrUnknownVariableException(value);
-            if (value.equals("Unknown variable")) {
-                return "Unknown variable";
+            if (value.equals("Unknown variable: " + value)) {
+                return value;
             } else {
                 valueDouble = Double.parseDouble(value);
                 if (minus) {
                     valueDouble *= -1;
                 }
-            }
+            }*/
         }
         return addVariable(variable, valueDouble);
     }
