@@ -73,7 +73,7 @@ public class InputToOutputMatcherTest {
                    result.equals(Messages.NUMBER_IS_TOO_SMALL_MSG.getMessage()));
     }
 
-    /*@ParameterizedTest
+    /*@RepeatedTest
     @CsvFileSource(resources = {"/Equations.csv"})
     void testEquations(String given, String expected) {
 
